@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import DeleteButton from "@/components/DeleteButton";
-import type { PageProps } from "next";
+// import type { PageProps } from "next";
 
-export default async function NoteDetailPage({ params }: PageProps<{ id: string }>) {
+export default async function NoteDetailPage({params,}: {params: { id: string };}) {
     const session = await getServerSession(authOptions);
   
     if (!session || !session.user) {

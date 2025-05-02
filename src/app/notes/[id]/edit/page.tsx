@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import type { PageProps } from "next";
+// import type { PageProps } from "next";
 
 
 async function updateNote(formData: FormData) {
@@ -25,7 +25,7 @@ async function updateNote(formData: FormData) {
   redirect(`/notes/${noteId}`);
 }
 
-export default async function EditNotePage({ params }: PageProps<{ id: string }>) {
+export default async function EditNotePage({params,}: {params: { id: string };}) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
