@@ -1,20 +1,20 @@
-import { NextRequest, NextResponse, type RouteHandlerContext } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export async function POST(req: NextRequest, context: RouteHandlerContext) {
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     return NextResponse.redirect("/api/auth/signin");
   }
 
-  const { id } = context.params;
+  const  noteId  = params.id;
 
   await prisma.note.delete({
     where: {
-      id,
+      id: noteId,
       user: { email: session.user.email! },
     },
   });
