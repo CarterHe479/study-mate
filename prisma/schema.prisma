@@ -58,8 +58,11 @@ model Note {
   id        String   @id @default(cuid())
   title     String
   content   String
+  tags      String   @default("")  // 👈 这一行很关键
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id])
 }
+
+

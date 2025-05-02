@@ -8,21 +8,42 @@ import Link from "next/link";
 
 const prisma = new PrismaClient();
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }: { searchParams: { q?: string } }) {
   const session = await getServerSession(authOptions);
-
   if (!session || !session.user) {
     redirect("/api/auth/signin");
   }
 
+  const searchQuery = searchParams.q || "";
+
   const notes = await prisma.note.findMany({
-    where: { user: { email: session.user.email! } },
+    where: {
+      user: { email: session.user.email! },
+      ...(searchQuery && {
+        OR: [
+          { title: { contains: searchQuery } },
+          { content: { contains: searchQuery } },
+          { tags: { contains: searchQuery } },
+        ],
+      }),
+    },
     orderBy: { updatedAt: "desc" },
   });
+
 
   return (
     <div className="min-h-screen p-8 sm:p-16 font-sans bg-white text-black">
       <main className="max-w-2xl mx-auto flex flex-col gap-6">
+        <form method="GET" className="mb-4">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search notes..."
+            defaultValue={searchParams.q ?? ""}
+            className="w-full border p-2 rounded"
+          />
+        </form>
+
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">📚 Your Notes</h1>
           <Link
@@ -45,6 +66,14 @@ export default async function HomePage() {
                     Updated: {new Date(note.updatedAt).toLocaleString()}
                   </p>
                 </Link>
+                <div className="mt-2">
+                  <Link
+                    href={`/notes/${note.id}/edit`}
+                    className="text-sm text-blue-500 hover:underline"
+                  >
+                    Edit
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>
