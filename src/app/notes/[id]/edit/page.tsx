@@ -44,10 +44,7 @@ export default async function EditNotePage({params,}: {params: Promise<{ id: str
   }
 
   /* 其余 JSX 保持不变 */
-}
-
-
-  return (
+return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">✏️ Edit Note</h1>
       <form action={updateNote} className="flex flex-col gap-4">
@@ -96,3 +93,4 @@ export default async function EditNotePage({params,}: {params: Promise<{ id: str
     </div>
   );
 }
+
