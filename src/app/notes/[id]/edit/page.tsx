@@ -25,21 +25,27 @@ async function updateNote(formData: FormData) {
   redirect(`/notes/${noteId}`);
 }
 
-export default async function EditNotePage({params,}: {params: { id: string };}) {
+export default async function EditNotePage({params,}: {params: Promise<{ id: string }>;}) {
+  const { id } = await params;          // ① 先 await
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user) {
+  if (!session?.user) {
     redirect("/api/auth/signin");
   }
 
-  const { id } = params;
-  const note = await prisma.note.findUnique({
-    where: { id },
-  });
+  const note = await prisma.note.findUnique({ where: { id } });
 
   if (!note || note.userId !== session.user.id) {
-    return <p className="p-6 text-red-500">Note not found or you don’t have permission.</p>;
+    return (
+      <p className="p-6 text-red-500">
+        Note not found or you don’t have permission.
+      </p>
+    );
   }
+
+  /* 其余 JSX 保持不变 */
+}
+
 
   return (
     <div className="max-w-2xl mx-auto p-6">

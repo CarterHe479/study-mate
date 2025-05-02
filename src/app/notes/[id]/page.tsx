@@ -7,14 +7,13 @@ import Link from "next/link";
 import DeleteButton from "@/components/DeleteButton";
 // import type { PageProps } from "next";
 
-export default async function NoteDetailPage({params,}: {params: { id: string };}) {
+export default async function NoteDetailPage({params,}: {params: Promise<{ id: string }>;}) {
+    const { id } = await params;          // ① 先 await
     const session = await getServerSession(authOptions);
   
     if (!session || !session.user) {
       redirect("/api/auth/signin");
     }
-  
-    const { id } = params; // ✅ 改这里，去掉 await
   
     const note = await prisma.note.findUnique({
       where: { id },
