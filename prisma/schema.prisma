@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // dev 环境用 sqlite，部署可换 postgresql
-  url      = "file:./dev.db"
+  provider = "postgresql" // dev 环境用 sqlite，部署可换 postgresql
+  url      = env("DATABASE_URL")
 }
 
 model User {
