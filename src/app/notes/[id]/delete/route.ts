@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
+// import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 export async function POST(
@@ -9,17 +9,17 @@ export async function POST(
   ): Promise<NextResponse> {
     const { id } = await params;
 
-  const session = await getServerSession(authOptions);
+//   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user) {
-    return NextResponse.redirect("/api/auth/signin");
-  }
+//   if (!session || !session.user) {
+//     return NextResponse.redirect("/api/auth/signin");
+//   }
 
 
   await prisma.note.delete({
     where: {
       id,
-      user: { email: session.user.email! },
+    //   user: { email: session.user.email! },
     },
   });
 
