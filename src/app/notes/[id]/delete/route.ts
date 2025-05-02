@@ -1,37 +1,24 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-
-  const { id } = await params;
+export async function POST(req: Request, context: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     return NextResponse.redirect("/api/auth/signin");
   }
 
-  // 找到这条笔记
-  const note = await prisma.note.findUnique({
-    where: { id },
-  });
+  const { id } = await context.params;
 
-  // 权限校验
-  if (!note || note.userId !== session.user.id) {
-    return NextResponse.json(
-      { error: "Not authorized or note not found." },
-      { status: 403 }
-    );
-  }
-
-  // 删除笔记
   await prisma.note.delete({
-    where: { id },
+    where: {
+      id,
+      user: { email: session.user.email! },
+    },
   });
 
+  // ✅ 删除完成后重定向到首页
   return NextResponse.redirect(new URL("/", req.url));
 }
