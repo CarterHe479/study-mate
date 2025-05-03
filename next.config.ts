@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    // 关闭 async params & searchParams
+    asyncParams: false,
+    asyncSearchParams: false,
+  },
 };
 
 export default nextConfig;
+
