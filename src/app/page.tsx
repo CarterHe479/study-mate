@@ -5,12 +5,12 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
-import type { PageProps } from "next";
+// import type { PageProps } from "next";
 
 
 const prisma = new PrismaClient();
 
-export default async function HomePage({ searchParams }: PageProps<{ q?: string }>) {
+export default async function HomePage({searchParams,}: {searchParams: { q?: string };}) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     redirect("/api/auth/signin");
