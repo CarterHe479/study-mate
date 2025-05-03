@@ -10,13 +10,17 @@ import Link from "next/link";
 
 const prisma = new PrismaClient();
 
-export default async function HomePage({searchParams,}: {searchParams: { q?: string };}) {
+export default async function HomePage({searchParams,}: {searchParams: Promise<{ q?: string }>;}) {
+
+  const { q: query} = await searchParams; // 这里的 searchParams 是一个 Promise
   const session = await getServerSession(authOptions);
+  
+
   if (!session || !session.user) {
     redirect("/api/auth/signin");
   }
 
-  const searchQuery = searchParams.q || "";
+  const searchQuery = query || "";
 
   const notes = await prisma.note.findMany({
     where: {
