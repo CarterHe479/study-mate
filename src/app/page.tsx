@@ -11,8 +11,7 @@ import Link from "next/link";
 const prisma = new PrismaClient();
 
 export default async function HomePage({searchParams,}: {searchParams: Promise<{ q?: string }>;}) {
-
-  const { q: query} = await searchParams; // 这里的 searchParams 是一个 Promise
+  const { q } = await searchParams;
   const session = await getServerSession(authOptions);
   
 
@@ -20,7 +19,8 @@ export default async function HomePage({searchParams,}: {searchParams: Promise<{
     redirect("/api/auth/signin");
   }
 
-  const searchQuery = query || "";
+  // const searchQuery = query || "";
+  const searchQuery = q || "";
 
   const notes = await prisma.note.findMany({
     where: {
@@ -45,7 +45,7 @@ export default async function HomePage({searchParams,}: {searchParams: Promise<{
             type="text"
             name="q"
             placeholder="Search notes..."
-            defaultValue={searchParams.q ?? ""}
+            defaultValue={searchQuery}
             className="w-full border p-2 rounded"
           />
         </form>

@@ -4,8 +4,8 @@ import type { NextConfig } from "next";
 const nextConfig = {
   experimental: {
     // 关闭 async params & searchParams
-    asyncParams: false,
-    asyncSearchParams: false,
+    // asyncParams: false,
+    // asyncSearchParams: false,
   },
 };
 
