@@ -2,8 +2,6 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-// import type { PageProps } from "next";
-
 
 async function updateNote(formData: FormData) {
   "use server";
@@ -25,8 +23,10 @@ async function updateNote(formData: FormData) {
   redirect(`/notes/${noteId}`);
 }
 
-export default async function EditNotePage({params,}: {params: Promise<{ id: string }>;}) {
-  const { id } = await params;          // ① 先 await
+export default async function EditNotePage({
+  params,
+}: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -37,17 +37,19 @@ export default async function EditNotePage({params,}: {params: Promise<{ id: str
 
   if (!note || note.userId !== session.user.id) {
     return (
-      <p className="p-6 text-red-500">
+      <p className="p-6 text-red-500 animate-fadeIn">
         Note not found or you don’t have permission.
       </p>
     );
   }
 
-  /* 其余 JSX 保持不变 */
-return (
-    <div className="max-w-2xl mx-auto p-6">
+  return (
+    <div className="max-w-2xl mx-auto p-6 animate-fadeIn">
       <h1 className="text-2xl font-bold mb-4">✏️ Edit Note</h1>
-      <form action={updateNote} className="flex flex-col gap-4">
+      <form
+        action={updateNote}
+        className="flex flex-col gap-4 bg-white shadow p-6 rounded-lg transition-all hover:shadow-lg"
+      >
         <input type="hidden" name="noteId" value={note.id} />
 
         <div>
@@ -57,7 +59,7 @@ return (
             name="title"
             defaultValue={note.title}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
 
@@ -68,7 +70,7 @@ return (
             rows={8}
             defaultValue={note.content}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           ></textarea>
         </div>
 
@@ -79,18 +81,17 @@ return (
             name="tags"
             defaultValue={note.tags ?? ""}
             placeholder="e.g. study, nextjs, project"
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
 
         <button
           type="submit"
-          className="bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors shadow hover:shadow-lg"
+          className="bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-all shadow hover:shadow-lg transform hover:scale-105"
         >
-          Update Note
+          ✅ Update Note
         </button>
       </form>
     </div>
   );
 }
-
