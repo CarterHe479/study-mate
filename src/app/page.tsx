@@ -3,7 +3,8 @@ import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-
+import { NotesList } from "@/components/NoteList";
+import type { Note } from "@/components/NoteList";
 const prisma = new PrismaClient();
 
 export default async function HomePage({
@@ -34,6 +35,14 @@ export default async function HomePage({
     orderBy: { updatedAt: "desc" },
   });
 
+  const notesForClient: Note[] = notes.map((n) => ({
+    id: n.id,
+    title: n.title,
+    updatedAt: n.updatedAt.toISOString(),
+    status: n.status as "approved" | "pending" | "rejected",
+    tags: n.tags,
+  }));
+
   return (
     <div className="min-h-screen p-8 sm:p-16 font-sans bg-white text-black">
       <main className="max-w-2xl mx-auto flex flex-col gap-6 animate-fadeIn">
@@ -58,56 +67,13 @@ export default async function HomePage({
         </div>
 
         {notes.length === 0 ? (
-          <p className="text-gray-500 animate-fadeIn">You don’t have any notes yet.</p>
+          <p className="text-gray-500 animate-fadeIn">
+            You don’t have any notes yet.
+          </p>
         ) : (
           <ul className="flex flex-col gap-4">
-            {notes.map((note) => (
-              <li
-                key={note.id}
-                className="border p-4 rounded shadow transition duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] bg-white group"
-              >
-                <Link href={`/notes/${note.id}`}>
-                  <h2 className="text-lg font-semibold">{note.title}</h2>
-                  <p className="text-sm text-gray-500">
-                    Updated: {new Date(note.updatedAt).toLocaleString()}
-                  </p>
-
-                  {/* 新增的 status 显示 */}
-                  {note.status !== "approved" && (
-                    <p
-                      className={`text-xs mt-1 ${
-                        note.status === "rejected" ? "text-red-500" : "text-yellow-500"
-                      }`}
-                    >
-                      ⚠️ This note is <span className="font-semibold">{note.status}</span>
-                    </p>
-                  )}
-                </Link>
-
-                {/* 标签显示 */}
-                {note.tags && note.tags.trim() !== "" && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {note.tags.split(",").map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded-full transition hover:bg-gray-300"
-                      >
-                        {tag.trim()}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <div className="mt-2">
-                  <Link
-                    href={`/notes/${note.id}/edit`}
-                    className="text-sm text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </Link>
-                </div>
-              </li>
-            ))}
+            {/* ⬇️ 用带动画的 NotesList 代替手写 li 循环 */}
+            <NotesList notes={notesForClient} />
           </ul>
         )}
       </main>
