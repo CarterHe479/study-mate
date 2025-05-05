@@ -71,6 +71,8 @@ model Note {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   status    String   @default("approved") // ✅ 新增
+  isPublic  Boolean  @default(false)  // ✅ 新增字段
+  publicId  String?  @unique          // ✅ 唯一 publicId，用来生成公开链接
 }
 model Todo {
   id        String   @id @default(cuid())
