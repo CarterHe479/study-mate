@@ -16,6 +16,9 @@ async function createPublicLink(noteId: string) {
     where: { id: noteId },
     data: { isPublic: true, publicId },
   });
+
+  // ✅ 加上这一行，点完按钮自动刷新页面
+  redirect(`/notes/${noteId}`);
 }
 
 export default async function NoteDetailPage({
