@@ -6,6 +6,18 @@ import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import DeleteButton from "@/components/DeleteButton";
 
+async function createPublicLink(noteId: string) {
+  "use server";
+  const { customAlphabet } = await import('nanoid');
+  const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 12);
+
+  const publicId = nanoid();
+  await prisma.note.update({
+    where: { id: noteId },
+    data: { isPublic: true, publicId },
+  });
+}
+
 export default async function NoteDetailPage({
   params,
 }: {
@@ -51,6 +63,23 @@ export default async function NoteDetailPage({
         </p>
       )}
 
+      {note.isPublic && note.publicId && (
+        <div className="mt-4">
+          <p className="text-sm text-gray-500">
+            Public Link:{" "}
+            <a
+              href={`/public/${note.publicId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline break-all"
+            >
+              {process.env.NEXT_PUBLIC_SITE_URL}/public/{note.publicId}
+            </a>
+          </p>
+        </div>
+      )}
+
+
       <div className="mt-6 flex justify-between items-center">
         <Link
           href="/"
@@ -60,6 +89,15 @@ export default async function NoteDetailPage({
         </Link>
         <DeleteButton noteId={note.id} />
       </div>
+
+      <form action={async () => {
+        "use server";
+        await createPublicLink(note.id);
+      }} >
+        <button type="submit" className="text-sm text-green-500 hover:underline ml-4">
+          {note.isPublic ? '✅ Public Link Created' : 'Make Public'}
+        </button>
+      </form>
     </div>
   );
 }
