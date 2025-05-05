@@ -1,3 +1,4 @@
+"use client";               // 顶级布局需要转成 client component
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
 //     </html>
 //   );
 // }
-"use client";               // 顶级布局需要转成 client component
+
 
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
