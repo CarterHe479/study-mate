@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // 简单的敏感词列表
-const sensitiveWords = ["badword", "inappropriate", "spam", "广告"];
+const sensitiveWords = ["badword", "inappropriate", "spam", "shit", "fuck", "damn", "广告", "色情", "暴力", "仇恨"];
 
 function checkContentSafety(content: string): boolean {
   const lowerContent = content.toLowerCase();
