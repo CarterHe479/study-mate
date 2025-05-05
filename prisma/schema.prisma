@@ -16,6 +16,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   notes         Note[]
+  todos         Todo[]
 }
 
 model Account {
@@ -64,6 +65,15 @@ model Note {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   status    String   @default("approved") // ✅ 新增
+}
+model Todo {
+  id        String   @id @default(cuid())
+  title     String
+  completed Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
