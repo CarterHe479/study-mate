@@ -32,9 +32,14 @@ export default async function NoteDetailPage({
       <p className="text-sm text-gray-500 mb-4">
         Last updated: {new Date(note.updatedAt).toLocaleString()}
       </p>
-      <div className="prose max-w-none transition-all duration-500">
-        <ReactMarkdown>{note.content}</ReactMarkdown>
+
+      {/* === 旧的纯 <div className="prose">... === 替换为 ↓ === */}
+      <div className="mt-6 bg-white rounded-lg shadow px-6 py-8 transition hover:shadow-lg">
+        <article className="prose lg:prose-lg leading-relaxed">
+          <ReactMarkdown>{note.content}</ReactMarkdown>
+        </article>
       </div>
+
 
       {/* Tags 展示 */}
       {note.tags && (
